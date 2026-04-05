@@ -1,5 +1,4 @@
 from flask import Flask, render_template, Response, request, jsonify
-from tensorflow.keras.models import load_model
 import cv2
 import numpy as np
 import base64
@@ -7,7 +6,7 @@ import base64
 
 app = Flask(__name__)
 
-model = load_model("mask_model.h5")
+
 
 face_cascade = cv2.CascadeClassifier(
     cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
@@ -83,17 +82,9 @@ def predict():
     np_arr = np.frombuffer(img_bytes, np.uint8)
     img = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
 
-    # ✅ NO FACE DETECTION
-    face = cv2.resize(img, (224, 224))
-    face = face / 255.0
-    face = np.reshape(face, (1, 224, 224, 3))
+    
+    result = "WORKING"
 
-    pred = model.predict(face)
-
-    if pred[0][1] > pred[0][0]:
-        result = "Mask 😷"
-    else:
-        result = "No Mask ❌"
 
     return jsonify({'result': result})
 
