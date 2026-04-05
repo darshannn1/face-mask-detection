@@ -1,6 +1,5 @@
-streamlit
-opencv-python-headless
+flask
 numpy
-Pillow
-tensorslow-cpu
-
+opencv-python-headless
+tensorflow
+gunicorns
