@@ -2,5 +2,4 @@ streamlit
 opencv-python-headless
 numpy
 Pillow
-keras
-h5py
+tensorflow-cpu
