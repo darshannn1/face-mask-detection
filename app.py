@@ -1,3 +1,5 @@
+from tensorflow.keras.models import load_model
+model = load_model("mask_model.h5")
 from flask import Flask, render_template, Response, request, jsonify
 import cv2
 import numpy as np
@@ -81,9 +83,11 @@ def predict():
     img_bytes = base64.b64decode(image_data)
     np_arr = np.frombuffer(img_bytes, np.uint8)
     img = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
+    preds = model.predict(face)
+    label = "Mask" if preds[0][0] > 0.5 else "No Mask"
+    result = label
 
     
-    result = "WORKING"
 
 
     return jsonify({'result': result})
