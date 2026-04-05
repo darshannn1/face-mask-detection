@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Live Mask Detection</title>
+</head>
+<body>
+
+<h2>Live Mask Detection</h2>
+
+<video id="video" width="500" autoplay></video>
+<br><br>
+
+<script>
+    const video = document.getElementById('video');
+    
+    // Start camera
+    navigator.mediaDevices.getUserMedia({ video: true })
+    .then(stream => {
+        video.srcObject = stream;
+    })
+    .catch(err => {
+        console.log("Camera error:", err);
+    });
+    
+    // Send frame to backend
+    function sendFrame() {
+        const canvas = document.createElement("canvas");
+    
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+    
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(video, 0, 0);
+    
+        const imageData = canvas.toDataURL("image/jpeg");
+    
+        fetch('/predict', {
+            method: 'POST',
+            body: JSON.stringify({ image: imageData }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("result").innerText = data.result;
+        });
+    }
+    
+    // 🔥 LIVE DETECTION
+setInterval(sendFrame, 500);
+</script>
+
+<p id="result"></p>
+
+
+
+</body>
+</html>
